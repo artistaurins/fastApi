@@ -1,15 +1,14 @@
+# Eye tracking, but working poorly. Might be because of the video resolution?
+# Max fps might be 10
+
 import cv2
 import dlib
 import numpy as np
 
 def shape_to_np(shape, dtype="int"):
-	# initialize the list of (x, y)-coordinates
 	coords = np.zeros((68, 2), dtype=dtype)
-	# loop over the 68 facial landmarks and convert them
-	# to a 2-tuple of (x, y)-coordinates
 	for i in range(0, 68):
 		coords[i] = (shape.part(i).x, shape.part(i).y)
-	# return the list of (x, y)-coordinates
 	return coords
 
 def eye_on_mask(mask, side):
@@ -32,12 +31,13 @@ def contouring(thresh, mid, img, right=False):
         pass
 
 detector = dlib.get_frontal_face_detector()
-predictor = dlib.shape_predictor('shape_68.dat')
+predictor = dlib.shape_predictor('face_shape.dat')
 
 left = [36, 37, 38, 39, 40, 41]
 right = [42, 43, 44, 45, 46, 47]
 
-cap = cv2.VideoCapture(0)
+file_location =f"unprocessedFiles/test3.mp4"
+cap = cv2.VideoCapture(file_location)
 ret, img = cap.read()
 thresh = img.copy()
 
@@ -73,12 +73,13 @@ while(True):
         thresh = cv2.bitwise_not(thresh)
         contouring(thresh[:, 0:mid], mid, img)
         contouring(thresh[:, mid:], mid, img, True)
-        # for (x, y) in shape[36:48]:
-        #     cv2.circle(img, (x, y), 2, (255, 0, 0), -1)
+        for (x, y) in shape[36:48]:
+            cv2.circle(img, (x, y), 2, (255, 0, 0), -1)
     # show the image with the face detections + facial landmarks
     cv2.imshow('eyes', img)
     cv2.imshow("image", thresh)
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+    key = cv2.waitKey(30)
+    if key == 27:
         break
     
 cap.release()
