@@ -9,7 +9,6 @@ def on_created(event):
     temp_str = str(event.src_path)
     video_file = temp_str.partition("/")[2]
     video_name = video_file.split(".")[0]
-    print("Video name is: " + video_name)
     video_processing(video_name)
 
 if __name__ == "__main__":

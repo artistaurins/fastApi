@@ -1,10 +1,12 @@
+import os
+
 import shutil
-from fastapi import FastAPI, File, Query,  UploadFile
+from fastapi import FastAPI, File, Query, UploadFile
+from fastapi.responses import FileResponse
 import uvicorn
 
 app = FastAPI()
 
-# File uploading
 @app.post("/upload_file")
 async def upload_file(
     session_id: str = Query(...),
@@ -17,6 +19,15 @@ async def upload_file(
     with open(file_location, "wb+") as file_object:
         shutil.copyfileobj(file.file, file_object)
     return {"info": f"file '{file_name}' saved at '{file_location}'"}
+
+@app.get("/processedFiles/{session_id}")
+async def get_results(
+    session_id: str = Query(...)
+):
+    file_location = f"processedFiles/{session_id}.json"
+    if os.path.exists(file_location):
+       return FileResponse(file_location) 
+    return {"Error" : "File not found!"}
 
 if __name__ == '__main__':
     uvicorn.run(
