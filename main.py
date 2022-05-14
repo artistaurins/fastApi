@@ -5,14 +5,6 @@ import numpy as np
 from fer import FER
 from fer import Video
 
-video_filename =f"unprocessedFiles/fun.mp4"
-cap = cv2.VideoCapture(video_filename)
-video = Video(video_filename)
-
-detector = FER(mtcnn=True)
-hog_face_detector = dlib.get_frontal_face_detector()
-dlib_facelandmark = dlib.shape_predictor("face_shape.dat")
-
 def shape_to_np_right(shape, dtype="int"):
     coords = np.zeros((68, 2), dtype=dtype)
     for i in range(36, 42):
@@ -43,6 +35,13 @@ std_pos_left_eye = 0
 n = 1
 
 def video_processing(video_name):
+    cap = cv2.VideoCapture(video_name)
+    video = Video(video_name)
+
+    detector = FER(mtcnn=True)
+    hog_face_detector = dlib.get_frontal_face_detector()
+    dlib_facelandmark = dlib.shape_predictor("face_shape.dat")
+
     while True:
         _, frame = cap.read()
         if n % 10 == 0:
