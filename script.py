@@ -6,10 +6,8 @@ from main import video_processing
 
 def on_created(event):
     print(f"{event.src_path} has been created!")
-    temp_str = str(event.src_path)
-    video_file = temp_str.partition("/")[2]
-    video_name = video_file.split(".")[0]
-    video_processing(video_name)
+    file_path = str(event.src_path)
+    video_processing(file_path)
 
 if __name__ == "__main__":
     patterns = ["*"]
